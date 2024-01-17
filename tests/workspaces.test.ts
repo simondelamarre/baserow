@@ -12,13 +12,15 @@ var workspace:workspaceBuilder;
 test('workspaces', async () => {
     await connector.connect();
     await connector.workspaces.list({}, {}, false);
-    for(const wp of connector.workspaces.workspaces) {
+    for (const wp of connector.workspaces.workspaces) {
         expect(wp).toBeInstanceOf(workspaceBuilder);
     }
 })
 
 test('workspaces:create', async () => {
-    workspace = await connector.workspaces.create('jest:test-workspace', {});
+    const exist = connector.workspaces.workspaces.find(wp => wp.workspace.name  == 'jest:test-workspace');
+    if (exist) workspace = exist;
+    else workspace = await connector.workspaces.create('jest:test-workspace', {});
     expect(workspace).toBeInstanceOf(workspaceBuilder);
 })
 

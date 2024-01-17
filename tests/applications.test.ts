@@ -15,17 +15,21 @@ var application: appBuilder;
 test('applications', async () => {
     await appconnector.connect();
     await appconnector.workspaces.list({}, {}, false);
-    workspace = await appconnector.workspaces.create('jest:test-app:workspace', {});
+    const exist = appconnector.workspaces.workspaces.find(wp => wp.workspace.name === 'jest:test-app:workspace:tables');
+    if(exist) workspace = exist;
+    else workspace = await appconnector.workspaces.create('jest:test-app:workspace', {});
     // await new Promise((r) => setTimeout(r, 1000));
     expect(workspace).toBeInstanceOf(workspaceBuilder);
     // await new Promise((r) => setTimeout(r, 1000));
-
+    await workspace.listApps();
     applications = workspace.applications;
     expect(applications).toBeInstanceOf(applicationFactory);
 
 })
 test('application:create',  async () => {
-    application = await applications.create('jest:test-app');
+    const exist = applications.apps.find(app => app.app.name === 'jest:test-app');
+    if (exist) application = exist;
+    else application = await applications.create('jest:test-app');
     // await new Promise((r) => setTimeout(r, 1000));
     expect(application).toBeInstanceOf(appBuilder);
 })

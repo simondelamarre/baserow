@@ -19,7 +19,9 @@ var table: tableBuilder;
 test('tables:init', async () => {
     await tableconnector.connect();
     await tableconnector.workspaces.list({}, {}, false);
-    workspace = await tableconnector.workspaces.create('jest:test-app:workspace:tables', {});
+    const exist = tableconnector.workspaces.workspaces.find(wp => wp.workspace.name === 'jest:test-app:workspace:tables');
+    if(exist) workspace= exist;
+    else workspace = await tableconnector.workspaces.create('jest:test-app:workspace:tables', {});
     expect(workspace).toBeInstanceOf(workspaceBuilder);
     applications = workspace.applications;
     expect(applications).toBeInstanceOf(applicationFactory);
@@ -27,22 +29,26 @@ test('tables:init', async () => {
     // await new Promise((r) => setTimeout(r, 1000));
     expect(application).toBeInstanceOf(appBuilder);
 })
+
 test('tables:create', async () => {
     await application.getTables(true);
     tables = application.tables;
     table = await tables.create('jest:table-test');
+    await table.fetch();
     expect(table).toBeInstanceOf(tableBuilder);
+    expect(table._DATA).toBeDefined();
 })
 
 test('tables:rename', async () => {
+    await new Promise((r) => setTimeout(r, 1000));
     await table.name('jest:table-test:renamed');
     expect(table._DATA?.name).toBe('jest:table-test:renamed')
 });
-/* 
+
 test('tables:delete', async () => {
     await tables.delete(table);
     const deleted = tables.tables.find(w => w.id === table._DATA!.id);
     expect(deleted).toBeUndefined();
+    await tableconnector.workspaces.rm(workspace.workspace.id, {});
 });
 
- */

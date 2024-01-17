@@ -60,7 +60,7 @@ export class tablesFactory extends brconnector {
             //data: ["uuid"],
             first_row_header: first_row_header
         }, {});
-        const table = new tableBuilder(new_table.id, this.setups, this.connector, this);
+        const table = new tableBuilder(new_table.table_id, this.setups, this.connector, this);
         return table;
     }
     async delete(table: tableBuilder): Promise<this> {

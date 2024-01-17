@@ -172,13 +172,17 @@ export class tableBuilder extends brconnector {
 
     listen() {}
     async fetch(): Promise<TABLE> {
-        const res = await this.get(
-            `/api/database/tables/${this.id}/`,
-            {},
-            {}
-        );
-        this._DATA = res;
-        return res;
+        try {
+            const res = await this.get(
+                `/api/database/tables/${this.id}/`,
+                {},
+                {}
+            );
+            this._DATA = res;
+            return res;
+        } catch(err)  {
+            throw `unable  to fetch table ${this.id}`
+        }
     }
     public query(): queryBuilder | undefined {
         // if(!this.factory) return;
@@ -278,9 +282,14 @@ export class tableBuilder extends brconnector {
         }
     }
     async name(name:string):Promise<this> {
-        await this.patch(`/api/database/tables/${this._DATA?.id}/`,{},{name},{});
-        if (this._DATA) this._DATA.name = name;
-        return this;
+        if (!this._DATA?.id) throw "you''ll fetch table with JWT auth first";
+        try  {
+            await this.patch(`/api/database/tables/${this._DATA?.id}/`,{},{name},{});
+            this._DATA!.name = name;
+            return this;
+        } catch(err) {
+            throw 'unable to rename table '+this._DATA?.id+' name :: '+name;
+        }
     }
     build(): {
         infos?: TABLE;
