@@ -31,7 +31,7 @@ export class workspaceFactory extends brconnector {
     }
     
 
-    async create(name: string, args: any) {
+    async create(name: string, args: any): Promise<workspaceBuilder> {
         const res = await this.post(
             "/api/workspaces/",
             {},
@@ -39,12 +39,15 @@ export class workspaceFactory extends brconnector {
             {},
             "JWT",
             false);
-        try {
+        /* try {
             this.list({}, {})
         } catch (err) {
             throw err;
-        }
-        return res;
+        } */
+        const space = new workspaceBuilder(res, this.setups, this.connector);
+        space.listApps(false);
+        this.workspaces.push(space);
+        return space;
     }
 
     async rm(id: number, args: any) {
@@ -57,7 +60,7 @@ export class workspaceFactory extends brconnector {
             false
         );
         try {
-            this.list({}, {})
+            await this.list({}, {})
         } catch (err) {
             throw err;
         }

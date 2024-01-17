@@ -58,9 +58,13 @@ export class applicationFactory extends brconnector {
     async create(name: string, args?: any): Promise<appBuilder> {
         try {
             const res = await this.post(
-                "/api/applications/",
-                { name },
+                `/api/applications/workspace/${this.workspace?.workspace.id}/`,
                 {},
+                { 
+                    name,
+                    "type": "database",
+                    "init_with_data": false
+                },
                 {}
             );
             const builder = new appBuilder(this, res, this.setups, this.connector);
@@ -73,8 +77,10 @@ export class applicationFactory extends brconnector {
 
     async rm(id: number, args?: any): Promise<any> {
         try {
-            const res = await this.del(`/api/appplications/${id}/`, {}, {}, {});
-            this.list();
+            const res = await this.del(`/api/applications/${id}/`, {}, {}, {});
+            // this.list();
+            this.apps = this.apps.filter(app => app.app.id !== id);
+            this.applications = this.applications.filter(app => app.id !== id);
             return res;
         } catch (err: ERROR_HANDLER) {
             throw err;

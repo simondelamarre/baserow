@@ -100,7 +100,6 @@ export class rowBuilder extends brconnector {
                             if (row.id === this._DATA.id) {
                                 for (const field of this.fields) {
                                     try {
-                                        console.log('live  sync ', field.field.name,  row['field_'+field.field.id])
                                         // this._DATA[field.field.name] = row['field_'+field.field.id];
                                         field.value = row['field_'+field.field.id];
                                         this.build();

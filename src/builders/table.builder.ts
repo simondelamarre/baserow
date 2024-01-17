@@ -90,12 +90,10 @@ export class tableBuilder extends brconnector {
                 }
 
                 
-                ///console.log('fetched  row builder from drow tables ',  this.pos);
             }
         }
     }
     async setPos(x:number, y:number) {
-        console.info('will set pos on the current row builder elected by callin getPos() first');
     } */
     onmessage(msg:any):void {
         try {

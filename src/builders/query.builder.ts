@@ -150,7 +150,6 @@ export class queryBuilder extends brconnector {
                 this.built.exclude :
             undefined;
         const filter = this.filter.build();
-        // console.log('build query this.filter.filters ', this.filter.filters, this.filter.buildQuery())
         if (filter.filters.length > 0 ||
             (
                 filter.groups.length > 0 && 
@@ -420,7 +419,6 @@ export class FilterBuilder {
                 else return g;
             })
         };
-        console.log('filter groued output ',  output);
         return output;
     }
 }

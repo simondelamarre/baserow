@@ -42,6 +42,7 @@ export class workspaceBuilder extends brconnector{
             await this.patch(`/api/workspaces/${this.workspace.id}/`, {}, {
                 name:name
             }, {});
+            this.workspace.name = name;
         }catch(err){
             throw err;
         }

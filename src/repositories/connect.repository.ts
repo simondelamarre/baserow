@@ -52,7 +52,7 @@ export class brconnect extends brconnector {
             }
             return this.setups.user
         } catch (error: any | Error | AxiosError) {
-            throw Error("ERROR:" + error.message)
+            throw error
         }
     }
     public async refreshToken() {

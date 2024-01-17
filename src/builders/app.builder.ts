@@ -33,7 +33,11 @@ export class appBuilder extends brconnector {
     }
     name(str:string) {
         this.app.name = str;
-        this.patch(`/api/applications/${this.app.name}/`, {}, {name:name}, {});
+        try {
+            this.patch(`/api/applications/${this.app.id}/`, {}, {name:str}, {});
+        } catch(err) {
+            throw 'unable to rename app'
+        }
     }
     build() {
         return this.app;

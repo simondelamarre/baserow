@@ -18,9 +18,7 @@ export class lookupConstructor extends fieldConstructor {
                 })
             });
             if (table) this.field.table = table._DATA?.id;
-            console.log('here :::::::::::: ');
         }
-        console.log('table is  ::::::::::: ', table, this.field.table, this.tables.tables);
         return { // todo:  thats not clear the baserow form wont run as well
             table: {
                 type: 'select',

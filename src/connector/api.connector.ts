@@ -64,7 +64,7 @@ export class brconnector {
         } catch (error: any | Error | AxiosError) {
             if (url !== '/api/user/token-refresh/')
                 this.error(error);
-            throw error;
+            throw error.message;
         }
     }
     public cancel(msg?: string) {
@@ -139,7 +139,6 @@ export class brconnector {
         type: string = "JWT",
         user: boolean = false
     ) {
-        console.log('this.connector._setups  ', this.connector);
         return {
             ...headers,
             ...{
