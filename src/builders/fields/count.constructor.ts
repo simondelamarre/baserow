@@ -12,6 +12,10 @@ export class countConstructor extends formulaConstructor {
         super(field, table, tables);
         this.field = field;
     }
+    through_field_id(field_id:number): this {
+        this.field.through_field_id = field_id;
+        return this;
+    }
     override build(): FIELD_COUNT {
         return this.field;
     }

@@ -85,7 +85,9 @@ export declare type FIELD_FORMULA = {
     formula?: string;
     formula_type?: string;
 } & FIELD;
-export declare type FIELD_COUNT = FIELD_FORMULA;
+export declare type FIELD_COUNT = FIELD_FORMULA & {
+    through_field_id?: number;
+};
 export declare type FIELD_ROLLUP = {
     through_field_id?: number;
     target_field_id?: number;

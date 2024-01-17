@@ -3,7 +3,7 @@ import type { ANY_FIELD } from "../../types/fields";
 import type { tableBuilder } from "../table.builder";
 import type { optionsBuilder } from "./options.builder";
 
-export class  fieldConstructor {
+export class fieldConstructor {
     public field: ANY_FIELD;
     public table:tableBuilder;
     public tables:tablesFactory;

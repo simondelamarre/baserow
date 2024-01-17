@@ -10,7 +10,8 @@
   ],
   "scripts": {
     "build": "tsup",
-    "test": "jest"
+    "test": "jest",
+    "test:fields": "jest -- fields.test.ts"
   },
   "repository": {
     "type": "git",

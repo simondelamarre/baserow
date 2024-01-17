@@ -229,13 +229,15 @@ export class tableBuilder extends brconnector {
         // todo: find how to set field field: FIELD, on post create 
         // https://api.baserow.io/api/redoc/#tag/Database-table-fields/operation/create_database_table_field
         field.build().table_id = this._DATA!.id;
-        await this.post(
+        const news = await this.post(
             `/api/database/fields/table/${this.id}/`,
             {},
             field.build(),
             {}
         )
-        await this.getFields();
+        const f = new fieldBuilder(news, this, this.setups, this.connector, this.factory, news.type)
+        this.fields.push(f);
+        // await this.getFields();
         return this;
     }
     async updateField(field: ANY_FIELD | fieldBuilder): Promise<this> {
