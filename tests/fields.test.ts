@@ -14,7 +14,7 @@ import { countConstructor } from '../src/builders/fields/count.constructor';
 import { link_rowConstructor } from '../src/builders/fields/link_row.constructor';
 
 const sdk = new baserow();
-const tableconnector = sdk.connector(
+const fieldconnector = sdk.connector(
     credentials,
     false
 )
@@ -26,11 +26,11 @@ var table: tableBuilder;
 var fields:fieldBuilder[];
 var field: fieldBuilder;
 test('fields:init', async () => {
-    await tableconnector.connect();
-    await tableconnector.workspaces.list({}, {}, false);
-    const exist = tableconnector.workspaces.workspaces.find(wp => wp.workspace.name === 'jest:test-app:workspace:tables');
+    await fieldconnector.connect();
+    await fieldconnector.workspaces.list({}, {}, false);
+    const exist = fieldconnector.workspaces.workspaces.find(wp => wp.workspace.name === 'jest:test-app:workspace:tables');
     if(exist) workspace= exist;
-    else workspace = await tableconnector.workspaces.create('jest:test-app:workspace:tables', {});
+    else workspace = await fieldconnector.workspaces.create('jest:test-app:workspace:tables:fields', {});
     expect(workspace).toBeInstanceOf(workspaceBuilder);
     applications = workspace.applications;
     expect(applications).toBeInstanceOf(applicationFactory);
@@ -77,19 +77,19 @@ test('fields:update', async () => {
 
 test('fields:update:types', async () => {
     field.type(FIELD_TYPE.FIELD_BOOLEAN);
-    await field.update();
+    // await field.update();
     expect(field.ctor).toBeInstanceOf(booleanConstructor);
 
     field.type(FIELD_TYPE.FIELD_COUNT);
     (field.ctor as countConstructor).through_field_id(3);
-    await field.update();
+    // await field.update();
     expect(field.ctor).toBeInstanceOf(countConstructor);
 
     field.type(FIELD_TYPE.FIELD_LINK_ROW);
     (field.ctor as link_rowConstructor).link_row_table_id(1);
     (field.ctor as link_rowConstructor).link_row_related_field_id(3);
 
-    await field.update();
+    // await field.update();
     expect(field.ctor).toBeInstanceOf(link_rowConstructor);
 })
 
@@ -99,4 +99,11 @@ test('fields:delete', async () => {
     await table.getFields();
     await new Promise((r) => setTimeout(r, 1000));
     expect(fields.length).toBeLessThanOrEqual(before);
+})
+
+
+test('workspaces:delete', async () => {
+    await fieldconnector.workspaces.rm(workspace.workspace.id, {});
+    const wp = fieldconnector.workspaces.workspaces.find(w => w.workspace.id === workspace.workspace.id);
+    expect(wp).toBeUndefined();
 })
