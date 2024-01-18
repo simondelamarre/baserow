@@ -48,7 +48,6 @@ export class lookupConstructor extends fieldConstructor {
     };
     public through_field_id(id?: number): this {
         this.field.through_field_id = id;
-        
         return this;
     };
     public through_field_name(name?: string): this {

@@ -8,7 +8,7 @@ this is an unofficial baserow sdk that allow you to manage your workspaces, appl
 Le SDK n'est pas encore publié
 
 ```sh
-npm i @Bige/baserow --save
+npm i @landscape/baserow --save
 ```
 
 ## usage
@@ -17,9 +17,9 @@ En module immport ou require
 
 
 ```typescript
-import { baserow } from "@Bige/baserow";
+import { baserow } from "@landscape/baserow";
 // OR
-const baseerow = require('@Bige/baserow');
+const baseerow = require('@landscape/baserow');
 ```
 
 ---------------------
@@ -222,7 +222,7 @@ Les options de constructeurs sont nombreuses et correspondent aux namespaces dé
 logiquement vous devriez retrouver vos petits.
 
 ```typescript
-import { FIELD_TYPE } from "@Bige/types";
+import { FIELD_TYPE } from "@landscape/baserow/types";
 const field: fieldBuilder = table.fields[0];
 field
     .table_id(table.build().id)
@@ -343,7 +343,7 @@ vous devrez tooujours définir <b>un filter_type d'entrée</b>.
 Voici comment créer des groupes filtre :
 
 ```typescript
-import { BASEROW_QUERY_TYPE } from "@Bige/baserow/types";
+import { BASEROW_QUERY_TYPE } from "@landscape/baserow/types";
 const table:tableBuilder = tables.tables[0]; 
 const query:queryBuilder = table.query();
 query.filter_type('OR'); // first level filter type 'AND' by default
@@ -373,7 +373,7 @@ Pour requêter vous devrez probablement créer plusieurs instances selon les dro
 la gestion des droits des token est en cours d'optimisation.
 
 ```typescript
-import { baserow } from "@Bige/baserow";
+import { baserow } from "@landscape/baserow/baserow";
 const sdk = new baserow();
 const connector:connectionBuilder = sdk.connector(
     {

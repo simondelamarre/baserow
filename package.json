@@ -1,5 +1,5 @@
 {
-  "name": "@bige/baserow",
+  "name": "@landscape/baserow",
   "version": "1.0.0",
   "description": "bige unofficial baserow sdk",
   "main": "./dist/index.js",
@@ -15,7 +15,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/simondelamarre/baserow.git"
+    "url": "git+https://github.com/simondelamarre/baserow.git"
   },
   "keywords": [
     "baserow",
@@ -39,5 +39,8 @@
   },
   "dependencies": {
     "axios": "^1.6.5"
+  },
+  "directories": {
+    "test": "tests"
   }
 }
