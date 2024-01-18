@@ -137,7 +137,7 @@ export class rowBuilder extends brconnector {
         } catch(err) {
         }
     }
-    async update(news:{[key:string]:any},  auth:string='Token') {
+    async update(news:{[key:string]:any}, auth:string='Token') {
         // todo prevent useless updates
         if (this._DATA != news) {
             this._DATA = {...this._DATA, ...news};

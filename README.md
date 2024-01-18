@@ -711,6 +711,55 @@ field.set({
 > ;-)
 
 
+## About SOCKETS
+
+> Baserow provided you a couple of interesting features such as sockets.
+
+Le probleme avec les sockets c'est de les manager.
+ça balance une tonne d'infos et c'est cool mais les implémenter dans les interfaces c'est vite un enfer.
+
+Du coup ici on propose divers solutions simples pour pas abandonner :
+
+## socket simpplifiés les yeux fermés
+
+> [IMPORTANT!]
+> UTILISES le live lorsque tu as vraiment besoin d'un live sync sur tes interfaces.
+> la mmajorité des front n'ont pas besoin de cette feature et c'est pas le plus écologique
+
+### comment synchroniser toute tes interfaces
+
+plus haut tu auras vu LIVE qui traine sur false.
+c'est très simple.
+
+Peu importe le contexte de tes connecteurs, s'ils ont un update dédié il seront mis à jour.
+que ce soit pour une mise à jour de workspace, d'application, de table, ou d'un row.
+
+pour initialiser live ill suffit de le passer sur true;
+
+Pour illustrer de façon simple connectons deux instances en imaginant que nous avons au moins 1 row disponible:
+
+```javascript
+const sdk = new baserow();
+
+// un premier utilisateur se connecte
+const connector = sdk.connector({token: "your_baserow_token"}, true);
+await connector.connect();
+const query = new QueryBuilder({q: {}, table: { id: 2 }, connector: connector});
+query.scroll();
+
+// un second utilisateur se connecte
+const connector2 = sdk.connector({token: "your_baserow_token"}, true);
+await connector2.connect();
+const query2 = new QueryBuilder({q: {}, table: { id: 2 }, connector: connector2});
+query2.scroll();
+
+// Si l'utilisateur 1 met à jour le row[0] exemple :
+await query.results.rows[0].update({field_name: 'send an update on first_row field_name from query user 1'});
+
+// alors le field_name du row 0 de query2 du conecteur ou user 2 sera déjà :
+console.log(query2.results.rows[0]._DATA.field_name); // send an update on first_row field_name from query user 1
+```
+
 ## Features
 
 > [!NOTE]
@@ -742,3 +791,7 @@ field.set({
   - rendu de vos dataflow en cours
   - case studies + divers wip
   - designrow proposera de simplifier votre UI via baserow mais aussi d'autres connecteurs open source...
+- sockets :
+  - provide better documentation and exemples...
+  - allow to enable or disable sockets from any builders
+  - create hook to provide received from any
