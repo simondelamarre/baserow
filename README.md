@@ -1,4 +1,3 @@
-
 # UnOfficial! baserow SDK by Bige
 
 > [!IMPORTANT]  
@@ -34,7 +33,7 @@ import { baserow } from "@landscape/baserow";
 const baseerow = require('@landscape/baserow');
 ```
 
----------------------
+________________;
 
 ## Instances Baserow SDK
 
@@ -63,7 +62,7 @@ connector.connect()
     .catch(function(err) {console.error(err)});
 ```
 
----------------
+________;
 
 ## WORKSPACES
 
@@ -161,7 +160,8 @@ Pour supprimer une application vous devrez passer par l'applicationsFactory hér
 await applications.rm(application.app.id)
 ```
 
-----------------;
+
+________;
 
 ## TABLES
 
@@ -209,7 +209,8 @@ nous avons choisi rm pour remove
 await tables.rm(table)
 ```
 
-----------------;
+
+________;
 
 ## FIELDS
 
@@ -297,7 +298,8 @@ en cas d'erreur vous pouvez retrouver votre historique WIP.
 await field.history()
 ```
 
-------------;
+
+________;
 
 ## QUERY ROWS
 
@@ -465,7 +467,7 @@ query2.scroll();
 // same effects as a baserow view except footers
 ```
 
--------------;
+___________;
 
 ## ROWS et rowBuilder
 
@@ -508,7 +510,6 @@ if (rows  && rows[0]) {
 }
 ```
 
-
 #### supprimer une ligne (row)
 
 <!-- executable -->
@@ -519,6 +520,196 @@ if (rows  && rows[0]) {
     console.log(row.fields); // field_name serra égal à 'foo'
 }
 ```
+
+#### RowBuilder et constructeur
+
+Que ce soit à la suite d'une query ou lors de la conception,
+chaque rows devient un builder constitué d'un constructeur dédié.
+
+par defaut baserow propose une mmultitude de types comme :
+
+- text
+- long_text
+- email
+- phone number
+- boolean
+- color
+- count
+- date
+- formula
+- link_row
+- lookup
+- rollup
+- et caetera ...
+
+Je ne vais pas tout documenter ici mais dans l'idée voici comment accéder aux propriétés d'un row depuis l'objet _fields ou encore depuis son constructor.
+
+### Row _fields
+
+> [NOTE!]
+> certains fields comme formula ne sont pas encore disponibles.
+
+Dans la majorité des cas d'usages @landscape/baserow propose une api dédiée par type.
+et cette api est notament composée  de l'object _field qui va disparaître au profit de patterns plus enrichihs.
+
+L'intéret de cet objectBuilder est de proposer des innputs consistants et de limiter les appels ineffiscients par exemple pour un field de  type texte :
+
+```javascript
+// on connsidere qu'on a un field selectionné de type text exemple ;
+instanceOf field === fieldBuilder && instanceOf field.ctor === textConstructor;
+
+// invoquer la methhode _field va renvoyer l'objet form suivant
+const form = field._fields();
+/**
+ form = text_default: {
+    type: 'string',
+    required: false
+ }
+**/
+```
+
+De cette façon lorsque vous créez une interface vous pouvez proposer text_default depuis l'api OAS de baserow.
+
+### Object _field field date par exemple
+
+Maintenant prenons le type date pour le même exercice :
+
+```javascript
+// on connsidere qu'on a un field selectionné de type date exemple ;
+instanceOf field === fieldBuilder && instanceOf field.ctor === dateConstructor;
+
+// invoquer la methhode _field va renvoyer l'objet form suivant
+const form = field._fields();
+/**
+ form = date_format: {
+    type: 'select',
+    required: true,
+    options: [
+        {
+            key: 'europe dd/mm/YYYY',
+            value: 'EU'
+        },
+        {
+            key: 'american mm/dd/YYYY',
+            value: 'US'
+        },
+        {
+            key: 'ISO YYYY/MM/DD',
+            value: 'ISO'
+        }
+    ]
+},
+date_include_time: {
+    type: 'boolean',
+    required: true,
+    childrens: {
+        date_time_format: {
+            value: true,
+            type: 'select',
+            required: true,
+            options: [
+                {
+                    key: 'europe dd/mm/YYYY',
+                    value: 'dd/mm/YYYY'
+                },
+                {
+                    key: 'american mm/dd/YYYY',
+                    value: 'dd/mm/YYYY'
+                },
+                {
+                    key: 'ISO YYYY/MM/DD',
+                    value: 'YYYY/MM/DD'
+                }
+            ]
+        },
+    }
+},
+date_show_tzinfo: {
+    type: 'boolean',
+    required: true,
+},
+date_force_timezone: {
+    type: 'boolean',
+    required: false,
+}
+**/
+```
+
+## TLDR; => l'objet field._fields
+
+Trop long à documenter dans un markdown,
+la proposition consiste donc à définir et scoper sur chaque field type depuis l'objet _field et par la même occasion vous offrir l'opportunité de typer vos formulaires et vérifier vos appels api.
+
+> C'est pratique et léger en front ou back !
+
+## Voyons field._fields en constructeur maitenant
+
+C'est comme l'object field._fields mais en pattern builder.
+Ce qu'il faut savoir c'est qu'un field sera toujours proposé par son constructeur.
+(s'il est documenté "obviously")
+
+repenons _fields depuis le contructeur text comme exemple :
+
+```javascript
+// on considere que :
+instanceOf field === textConstructor;
+
+// alors nous pouvons proposer depuis son constructeur :
+field.text_default("foo") // n'autorise que string > 0
+```
+
+la même chose en fluent depuis le conntructeur field dateConstructor :
+
+```javascript
+
+const field = new fieldBuilder(
+    field: DATE_FIELD, 
+    table: Partial<tableBuilder>, // {id:table_id} required
+    setups: BASEROW_SETUPS, // {} TODO remove BASEROW_SETUPS from fieldBuilder
+    connector: connectionBuilder // une instance baserow connectée => la base !
+);
+
+// ce field builder est  utilisable n'importe ou et modifiable.
+// tu pourrais très bien changer de table etc.
+
+// bref du coup tu sais écrire ceci :
+field.date_format(DATE_FORMAT)
+    .date_include_time(boolean)
+    .date_time_format(DATE_TIME)
+    .date_show_tzinfo(boolean)
+    .date_force_timezone(boolean); // return dateBuilder extended from fieldBuilder
+field.build(); // retourne FIELD_DATE
+
+```
+
+### TLDR;
+
+Tout ça c'est bien beau mais concrétement ?
+En clair ça te permet d'éviter d'écrire du caca mais également de savoir ce qui sera écris dans ta database.
+
+Ceci dit et pour deux raisons fieldBuilder est agnostique.
+
+du coup tu sais également écrire ce que tu veux sans types ex :
+
+```javascript
+const field = new fieldBuilder(
+    field: ANY_FIELD, 
+    table: Partial<tableBuilder>, // {id:table_id} required
+    setups: BASEROW_SETUPS, // {} TODO remove BASEROW_SETUPS from fieldBuilder
+    connector: connectionBuilder // une instance baserow connectée => la base !
+);
+field.set({
+    foo: "bar",
+    bar: new Date(),
+    baz: 3,
+    // etc...
+})
+```
+
+> tu peux définir un row comme tu veux,
+> Simplement ça risque de ne pas plaire à l'API...
+> ;-)
+
 
 ## Features
 
@@ -550,4 +741,4 @@ if (rows  && rows[0]) {
   - demo vike en cours de production
   - rendu de vos dataflow en cours
   - case studies + divers wip
-  - designrow proposera de simplifier votre UI via baserow mais aussi d'autres connecteurs open source
+  - designrow proposera de simplifier votre UI via baserow mais aussi d'autres connecteurs open source...
