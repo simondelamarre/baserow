@@ -8,6 +8,9 @@
   "files": [
     "dist"
   ],
+  "exports": {
+    "baserow": "./dist/index.mjs"
+  },
   "scripts": {
     "build": "npx tsc",
     "build:tsup": "tsup --dts",

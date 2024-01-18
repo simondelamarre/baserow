@@ -1,7 +1,15 @@
 
-# Unofficial baserow SDK by Bige
+# UnOfficial! baserow SDK by Bige
 
-this is an unofficial baserow sdk that allow you to manage your workspaces, applications, fields and rows designed for patterns lovers <3.
+> [!IMPORTANT]  
+> This package is released for testing for my personal needs. it is not recommended to use it at the moment because the next version will be heavily modified
+
+> [!CAUTION] 
+> this package is not official if you are looking for a client-only sdk prefer te official baserow-client availlable on npm
+
+> [!NOTE]
+> This SDK offers an approach based on different design patterns intended to simplify the development of complex and reactive applications. the idea being that each call can dispatch the state of your connectors reactively in vue, react or angular via redux, vuex or even pinia. The main objective being to maintain a single connector for different apps but also to offer a fluent approach simplifying the storage of your queries (par exemple). 
+
 
 ## install
 
@@ -14,7 +22,6 @@ npm i @landscape/baserow --save
 ## usage
 
 En module immport ou require
-
 
 ```typescript
 import { baserow } from "@landscape/baserow";
@@ -30,7 +37,9 @@ const baseerow = require('@landscape/baserow');
 
 Nous proposons la création d'instances multiples permettant de connecter différents workspaces et utilisateurs.
 
-```javascript
+<!-- executable -->
+```javascript script
+// javascript script
 const sdk = new baserow();
 const connector = sdk.connector(
     {
@@ -57,6 +66,7 @@ Après connexion vous pouvez récupérer vos workspaces.
 les workspaces sont un design pattern factory qui proposerons des workspaceBuilder 
 offrant de multiples inetractions.
 
+<!-- executable -->
 ```typescript
 const factory: workspaceFactory = connector.workspaces;
 await factory.list({}, {}, false); // workspaceBuilder[]
@@ -69,6 +79,7 @@ Pour créer un workspace il suffit d'être connecté à une instance de connecto
 et d'invoquer workspacesFactory.
 la méthode create retourne un workspaceBuilder de façonn asynchrone.
 
+<!-- executable -->
 ```typescript
 const workspace:workspaceBuilder = await workspaces.create('my workspace name');
 ```
@@ -79,6 +90,7 @@ L'unique méthode proposée par l'API OAS3 baserow et de renommer.
 Aussi nous invoquerons update dans l'idée que d'autres paramètres pourraient arriver
 lors de mmises à jour de l'API.
 
+<!-- executable -->
 ```javascript
 await workspace.update('updated name');
 // après l'appel le nom est mis à jour et loqieuemnt les logs précédents également
@@ -90,6 +102,7 @@ workspace.workspace.name
 la suppression d'un workspace peut également être effectuée depuis un  workspaceBuilder.
 ici nous supprimons depuis la factory en précisant l'id du workspace à supprimer.
 
+<!-- executable -->
 ```javascript
 await workspaces.rm(workspace.workspace.id);
 ```
@@ -105,6 +118,7 @@ Cela permmet d'hériter de différentes méthodes commme la création de databas
 A savoir sur baserow une application est généralement une database.
 (je ne sais pas pourquoi appplication à creuser et  renommer  pour  que  ce  soit  plus  pparlant)
 
+<!-- executable -->
 ```typescript
 const workspace:workspaceBuilder = await workspaces.create('my test space');
 const applications: applicationsFactory = workspace.applications;
@@ -115,6 +129,7 @@ const applications: applicationsFactory = workspace.applications;
 Pour créer une application il suffit d'invouer la méthode create de votre applicationFactory.
 pour rappel les app factories dépendent nécésserement d'un workspace et ne sont accessiblle que par authentification JWT pour des raisons de sécurité j'imagine.
 
+<!-- executable -->
 ```typescript
 const application:appBuilder = await applications.create('my test app');
 ```
@@ -123,6 +138,7 @@ const application:appBuilder = await applications.create('my test app');
 
 Pour renommmer une applciation il suffit d'invoquer la méthode rename de votre applicationBuilder pattern. 
 
+<!-- executable -->
 ```javascript
 await application.name('updated app name');
 ```
@@ -131,6 +147,7 @@ await application.name('updated app name');
 
 Pour supprimer une application vous devrez passer par l'applicationsFactory héritée de votre workspaceBuidler.
 
+<!-- executable -->
 ```javascript
 await applications.rm(application.app.id)
 ```
@@ -144,6 +161,7 @@ await applications.rm(application.app.id)
 Maintenant que nous savons créer des applications  voyons comment y ajouter des tables.
 Ici nous allons créer une table dans l'applciation courante puis la suppprimerons plus base pour ne pas polluer votre baserow.
 
+<!-- executable -->
 ```typescript
 const application:appBuilder = applications.create('my test app');
 application.getTables(true);
@@ -156,6 +174,7 @@ Un appBuilder contient toujours une tablesFactory même vide.
 et pour créer une table il  vous suffit d'invoquer la méthode create 
 sur la table souhaitée par exemple :
 
+<!-- executable -->
 ```typescript
 const table:tableBuilder = tables.create('my table')
 ```
@@ -164,6 +183,7 @@ const table:tableBuilder = tables.create('my table')
 
 Maintenant ous pouvez facilement renommer une table en invoquant la méthode name() de votre tableBuilder:
 
+<!-- executable -->
 ```typescript
 await table.name('updated table name')
 ```
@@ -175,6 +195,7 @@ l'objet  delete  étant réservé au constructeur étendu de l'API,
 nous avons choisi rm pour remove
 @todo : créer un alias remove => rm
 
+<!-- executable -->
 ```typescript
 await tables.rm(table)
 ```
@@ -190,6 +211,7 @@ Par defaut baserow ajoute 3 fields (je ne sais p as pourquoi).
 Pour l'instant vous ne pouvez pas les définir à la création
 et nous observerons plus tard comment créer une table avec une structurre de donnée souhaitée.
 
+<!-- executable -->
 ```typescript
 const table:tableBuilder = tables.create('my table');
 await table.getFields();
@@ -199,8 +221,10 @@ const fields:fieldBuiler[] = table.fields
 ### Créer un field
 
 Pour créer des fields nous recommandons l'usage de l'enum FIELD_TYPE en typescript.
-en javascript vous pourrez retrouver les types acceptés sur [la documentation api baserow](https://api.baserow.io/api/redoc/#tag/Database-table-fields/operation/update_database_table_field)
+en javascript vous pourrez retrouver les types acceptés sur :
+[la documentation api baserow](https://api.baserow.io/api/redoc/#tag/Database-table-fields/operation/update_database_table_field)
 
+<!-- executable -->
 ```typescript
 const field: fieldBuilder = table.addingField({
     type: 'text',
@@ -221,6 +245,7 @@ Ainsi et pour invoquer le constructeur d'un field vous utiliserez fieldBuilder.c
 Les options de constructeurs sont nombreuses et correspondent aux namespaces définis sur l'API baserow,
 logiquement vous devriez retrouver vos petits.
 
+<!-- executable -->
 ```typescript
 import { FIELD_TYPE } from "@landscape/baserow/types";
 const field: fieldBuilder = table.fields[0];
@@ -245,6 +270,7 @@ table.updateField(field)
 
 Pour supprimer un field vous invoquerez la méthode remove() de fieldBuilder;
 
+<!-- executable -->
 ```typescript
 const field: fieldBuilder = table.fields[0];
 field.remove()
@@ -257,6 +283,7 @@ table.deleteField(field)
 Lasuppression est directe.
 en cas d'erreur vous pouvez retrouver votre historique WIP.
 
+<!-- executable -->
 ```typescript
 await field.history()
 ```
@@ -274,6 +301,7 @@ De cette façon vous pouvez effectuer de  multiples requêtes en  parrallele san
 Les Queries du pattern tableBuilder offrent divers paramètres que noous documenterons plus tard comme le debounce qui par defaut vas prévenir puis abandonner les query précédentes qui n'auraient pas encore abouties.
 Par exemple enn utilisant la méthode search() sur une fréquence de frappe cela va prévenir des appels inutils et ainsi préserver la santé de votre application d'eventuels heat memory.
 
+<!-- executable -->
 ```typescript
 const table:tableBuilder = tables.tables[0]; 
 const query:queryBuilder = table.query(); 
@@ -299,6 +327,7 @@ cette méthode propose le paramètre join:boolean  qui s'occupera de  ne pas rec
 
 Nous observerons plus bas comment l'utilise;
 
+<!-- executable -->
 ```typescript
 const table:tableBuilder = tables.tables[0]; 
 const query:queryBuilder = table.query(); 
@@ -310,6 +339,7 @@ const res = await query.next(true); // (join:boolean): allow you to merge rows r
 
 Comme pour la méthode next vous pouvez utiliserl a méthode prev() pour charger les rows ou pages précédentes.
 
+<!-- executable -->
 ```typescript
 const table:tableBuilder = tables.tables[0]; 
 const query:queryBuilder = table.query(); 
@@ -323,6 +353,7 @@ La documentation filters est assez particulière et si vous êtes habitué à po
 
 Ceci dit nous avons simplifié les filtres sur le SDK permettant de ne plus se poser de questions sur leurs structure ce qui je pense est un réel gain de  temps (à noter ils ne fonctionnent que  partieellement  sur n8n ce qui a été une motivation pour l'écriture de ce SDK).
 
+<!-- executable -->
 ```typescript
 const table:tableBuilder = tables.tables[0]; 
 const query:queryBuilder = table.query();
@@ -342,6 +373,7 @@ vous devrez tooujours définir <b>un filter_type d'entrée</b>.
 
 Voici comment créer des groupes filtre :
 
+<!-- executable -->
 ```typescript
 import { BASEROW_QUERY_TYPE } from "@landscape/baserow/types";
 const table:tableBuilder = tables.tables[0]; 
@@ -372,6 +404,7 @@ Pour requêter vous devrez probablement créer plusieurs instances selon les dro
 
 la gestion des droits des token est en cours d'optimisation.
 
+<!-- executable -->
 ```typescript
 import { baserow } from "@landscape/baserow/baserow";
 const sdk = new baserow();
@@ -432,6 +465,7 @@ query2.scroll();
 Chaque Query offre l'accès à un rowsFactory lui même composé de rowBuilder.
 Cette structure est intéressante pour la réactivité de vos applications qui peuvent donc s'y abonner.
 
+<!-- executable -->
 ```typescript
 const table: tableBuilder = tables.tables[0]; 
 const query: queryBuilder = table.query();
@@ -445,6 +479,7 @@ La  mise à jour est toujours effectuée via patch ce qui permet des  mises à j
 
 Voici un exemple en  considérant que la query précédente contient au  moins un résultat :
 
+<!-- executable -->
 ```javascript
 if (rows  && rows[0]) {
     const row = rows[0];
@@ -455,6 +490,7 @@ if (rows  && rows[0]) {
 
 #### insérer une ligne (add row)
 
+<!-- executable -->
 ```javascript
 if (rows  && rows[0]) {
     const row = rows[0];
@@ -464,8 +500,9 @@ if (rows  && rows[0]) {
 ```
 
 
-#### supprimer un row
+#### supprimer une ligne (row)
 
+<!-- executable -->
 ```javascript
 if (rows  && rows[0]) {
     const row = rows[0];
