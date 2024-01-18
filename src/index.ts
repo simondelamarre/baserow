@@ -1,5 +1,6 @@
 import { connectionBuilder } from "./builders/connection.builder"
 import type { BASEROW_SETUPS_TYPE } from "./types/setups"
+// import * as types from "./types/index";
 
 export class baserow {
     public connectors: connectionBuilder[] = []
@@ -20,3 +21,6 @@ export class baserow {
         return builder;
     }
 }
+// export {types}
+
+

@@ -1,6 +1,6 @@
 {
   "name": "@landscape/baserow",
-  "version": "1.0.1",
+  "version": "1.0.3",
   "description": "bige unofficial baserow sdk",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
@@ -9,7 +9,8 @@
     "dist"
   ],
   "scripts": {
-    "build": "tsup",
+    "build": "npx tsc",
+    "build:tsup": "tsup --dts",
     "test": "jest",
     "test:fields": "jest -- fields.test.ts"
   },
