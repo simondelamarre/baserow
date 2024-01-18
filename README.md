@@ -8,20 +8,25 @@
 > this package is not official if you are looking for a client-only sdk prefer te official baserow-client availlable on npm
 
 > [!NOTE]
-> This SDK offers an approach based on different design patterns intended to simplify the development of complex and reactive applications. the idea being that each call can dispatch the state of your connectors reactively in vue, react or angular via redux, vuex or even pinia. The main objective being to maintain a single connector for different apps but also to offer a fluent approach simplifying the storage of your queries (par exemple). 
+> This SDK offers an approach based on different design patterns intended to simplify the development of complex and reactive applications. the idea being that each call can dispatch the state of your connectors reactively in vue, react or angular via redux, vuex or even pinia. The main objective being to maintain a single connector for different apps but also to offer a fluent approach simplifying the storage of your queries (par exemple)
 
 
 ## install
 
-Le SDK n'est pas encore publié
+Ce sdk est rédigé en typescript et compilé en es5 pour les vieux.
+il est utilisable en module en node ou vanilla.
+
+> [!CAUTION] 
+> il n'est pas recommandé de l'utiliser en production dans cette version.
 
 ```sh
 npm i @landscape/baserow --save
+yarn add @landscape/baserow
 ```
 
 ## usage
 
-En module immport ou require
+En module ou node require
 
 ```typescript
 import { baserow } from "@landscape/baserow";
@@ -33,9 +38,11 @@ const baseerow = require('@landscape/baserow');
 
 ## Instances Baserow SDK
 
-### créeer une instance SDK
+### créer une instance SDK
 
-Nous proposons la création d'instances multiples permettant de connecter différents workspaces et utilisateurs.
+La proposition consiste a assembler divers connecteurs baserow.
+Et c'est pourquoi vous devez utilliser la métode connector.
+L'idée étant d'utiliser une instance SDK pour une multitude de token (voila).
 
 <!-- executable -->
 ```javascript script
@@ -60,11 +67,12 @@ connector.connect()
 
 ## WORKSPACES
 
+Sur baserow un workspace permet de fragmenter et de gérer des accès.
+
 ### Récupérer vos workspaces
 
 Après connexion vous pouvez récupérer vos workspaces.
-les workspaces sont un design pattern factory qui proposerons des workspaceBuilder 
-offrant de multiples inetractions.
+Depuis le SDK les workspaces sont des fabriques.
 
 <!-- executable -->
 ```typescript
@@ -77,23 +85,24 @@ const workspaces: workspaceBuilder[] = factory.workspaces
 
 Pour créer un workspace il suffit d'être connecté à une instance de connector
 et d'invoquer workspacesFactory.
-la méthode create retourne un workspaceBuilder de façonn asynchrone.
+la méthode create retourne un workspaceBuilder de façon asynchrone.
 
 <!-- executable -->
 ```typescript
 const workspace:workspaceBuilder = await workspaces.create('my workspace name');
 ```
 
-### Renommer ou m ettre à jour un workspace
+### Renommer ou mettre à jour un workspace
 
-L'unique méthode proposée par l'API OAS3 baserow et de renommer.
-Aussi nous invoquerons update dans l'idée que d'autres paramètres pourraient arriver
-lors de mmises à jour de l'API.
+L'unique méthode proposée par l'API OAS3 baserow consiste à le renommer.
+Nous invoquerons update dans l'idée que d'autres paramètres pourraient arriver
+lors de mmises à jour de l'API baserow.
 
 <!-- executable -->
 ```javascript
 await workspace.update('updated name');
-// après l'appel le nom est mis à jour et loqieuemnt les logs précédents également
+// après l'appel le nom est mis à jour et loiquement 
+// note: j'ai constaté des temps de propagation après avoir obtenu un code 200 de l'api
 workspace.workspace.name
 ```
 
@@ -107,7 +116,7 @@ ici nous supprimons depuis la factory en précisant l'id du workspace à supprim
 await workspaces.rm(workspace.workspace.id);
 ```
 
-----------------
+__________;
 
 ## APPLICATIONS
 
@@ -136,7 +145,7 @@ const application:appBuilder = await applications.create('my test app');
 
 ### mettre à jour une application
 
-Pour renommmer une applciation il suffit d'invoquer la méthode rename de votre applicationBuilder pattern. 
+Pour renommmer une applciation il suffit d'invoquer la méthode rename de votre applicationBuilder pattern.
 
 <!-- executable -->
 ```javascript
@@ -152,7 +161,7 @@ Pour supprimer une application vous devrez passer par l'applicationsFactory hér
 await applications.rm(application.app.id)
 ```
 
-----------------
+----------------;
 
 ## TABLES
 
@@ -200,7 +209,7 @@ nous avons choisi rm pour remove
 await tables.rm(table)
 ```
 
-----------------
+----------------;
 
 ## FIELDS
 
@@ -288,7 +297,7 @@ en cas d'erreur vous pouvez retrouver votre historique WIP.
 await field.history()
 ```
 
-------------
+------------;
 
 ## QUERY ROWS
 
@@ -395,8 +404,8 @@ const res = query.results;
 
 ### Basic Auth Query without with app token
 
-Les exemples précédents utilisent une  authentification JWT pour des réisons de sécurité.
-Pour une  utillisation Front-End vous devrez créer une instance SDK connector avec un jeton API.
+Les exemples précédents utilisent une authentification JWT pour des raisons de sécurité.
+Pour une utillisation Front-End vous devrez créer une instance SDK connector avec un jeton API.
 pour créer un token et lui attribuer des drois vous devez vous rendre sur baserow.
 
 A noter les queries faisant appel à des applications non autorisées par le jeton seront évidement en faillure.
@@ -456,7 +465,7 @@ query2.scroll();
 // same effects as a baserow view except footers
 ```
 
--------------
+-------------;
 
 ## ROWS et rowBuilder
 
@@ -510,3 +519,35 @@ if (rows  && rows[0]) {
     console.log(row.fields); // field_name serra égal à 'foo'
 }
 ```
+
+## Features
+
+> [!NOTE]
+> Features in progress :
+
+- testing
+  - j'ai écris quelque tests pratiques et incomplets
+  - test rows et fields en cours
+- documentation :
+  - fields and fieldBuilders
+  - fields and history
+  - fields forms and warns
+  - fields fluent constructor
+- views :
+  - les views ne sont pas intégrées
+  - in progress
+- trash :
+  - la corbeille n'est pas inntégrée wip
+- fields :
+  - pour le moment certains fields sont disponibles
+  - formula est en cours...
+  - rollup. manque de documentation WIP
+  - boolean (je cherche comment mettre une valeur par defaut)
+  - lookup (wip : documentation en lecture)
+  - file le field file n'est pas du tout intégré en édition
+  - des checks divers sont en cours  pour prévenir des appels api non effectifs
+- demo and flow
+  - demo vike en cours de production
+  - rendu de vos dataflow en cours
+  - case studies + divers wip
+  - designrow proposera de simplifier votre UI via baserow mais aussi d'autres connecteurs open source

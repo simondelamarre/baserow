@@ -1,6 +1,6 @@
 {
   "name": "@landscape/baserow",
-  "version": "1.0.3",
+  "version": "1.0.31",
   "description": "bige unofficial baserow sdk",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
